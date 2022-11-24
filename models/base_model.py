@@ -8,11 +8,25 @@ import datetime
 class BaseModel:
     """Defines all common attributes/methods for other classes"""
 
-    def __init__(self):
-        """Initializing the base model class"""
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.datetime.now()
-        self.updated_at = datetime.datetime.now()
+    def __init__(self, *args, **kwargs):
+        """
+        Initializing the base model class
+        Each key of kwargs is an attribute name
+        Each value is the value of this attribute name
+        """
+        if kwargs:
+            for key, value in kwargs.items():
+                if key != '__class__':
+                    if key in ('created_at', 'updated_at'):
+                        date_time_iso = datetime.datetime.fromisoformat(value)
+                        setattr(self, key, date_time_iso)
+                    else:
+                        setattr(self, key, value)
+            print(self.__dict__)
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = self.updated_at = datetime.datetime.now()
+            # self.updated_at = datetime.datetime.now()
 
     def __str__(self):
         """
