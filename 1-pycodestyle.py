@@ -5,6 +5,3 @@
 def check_code_style():
     """Being compliant with Pycodestyle"""
     print("Be compliant to pycodestyle and coding standards")
-
-
-check_code_style()
