@@ -16,9 +16,11 @@ class BaseModel:
         """
         Initializes a BaseModel instance
         """
+        from models import storage
         if not kwargs:
             self.id = str(uuid4())
             self.created_at = self.updated_at = datetime.now()
+            storage.new(self)
         else:
             for key, value in kwargs.items():
                 if key != "__class__":
@@ -38,7 +40,9 @@ class BaseModel:
         """
         updates public instance attribute updated_at with current datetime
         """
+        from models import storage
         self.updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """
@@ -47,7 +51,7 @@ class BaseModel:
         dictionary = self.__dict__.copy()
         dictionary["__class__"] = self.__class__.__name__
 
-        for key, value in dictionary.items():
+        for key, value in self.__dict__.items():
             if key in ("created_at", "updated_at"):
                 value = self.__dict__[key].isoformat()
                 dictionary[key] = value

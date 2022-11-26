@@ -1,0 +1,7 @@
+Important things to remember
+
+Import python modules using dot notation and not the forward slash style
+i.e
+from engine.file_storage import FileStorage
+
+Not from engine/file_storage import FileStorage
