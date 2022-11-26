@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-print("Trying to open a file but path is folder")
 from models import storage
 from models.base_model import BaseModel
 
