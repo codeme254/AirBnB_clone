@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
 Just writing a beautiful code that passes all the pycodetyle checks
 """
