@@ -122,6 +122,64 @@ class TestBaseModel(unittest.TestCase):
                                if not k.startswith("_")}
         self.assertEqual(len(b.to_dict()), len(partial_expectation) + 1)
 
+    def test_automatic_id_and_dates_generation(self):
+        """
+        Checks if the id, created_at and updated_at are
+        automatically generated if they are not in kwargs
+        """
+        my_dictionary = {}
+        obj = BaseModel(**my_dictionary)
+        self.assertTrue(type(obj.id) is str)
+        self.assertTrue(type(obj.created_at) is datetime)
+        self.assertTrue(type(obj.updated_at) is datetime)
+
+    def test_generation_from_kwargs(self):
+        """
+        Tests if properties are really passed from kwargs
+        """
+        temp_date = datetime.now()
+        tmp_date_iso = temp_date.isoformat()
+        obj = BaseModel(id="382", created_at=tmp_date_iso, name="Jay")
+        self.assertEqual(obj.id, "382")
+        self.assertEqual(obj.created_at, temp_date)
+        self.assertEqual(obj.name, "Jay")
+
+    def test_args_are_ignored(self):
+        """
+        Tests whether args will be ignored and kwargs taken in
+        """
+        obj = BaseModel("342", id="738902367")
+        self.assertEqual(obj.id, "738902367")
+
+    def test_args_unused(self):
+        """
+        Arguements not used
+        """
+        bm = BaseModel(None)
+        self.assertNotIn(None, bm.__dict__.values())
+
+    def test_two_models_different_updated_at(self):
+        """
+        different update times
+        """
+        obj1 = BaseModel()
+        obj2 = BaseModel()
+        self.assertLess(obj1.updated_at, obj2.updated_at)
+
+    def test_two_models_different_created_at(self):
+        """
+        Models should have different created at
+        """
+        obj1 = BaseModel()
+        obj2 = BaseModel()
+        self.assertLess(obj1.created_at, obj2.created_at)
+
+    def test_no_args_instantiates(self):
+        """
+        Even if there are no args, instantiation should still be possible
+        """
+        self.assertEqual(BaseModel, type(BaseModel()))
+
 
 if __name__ == "__main__":
     unittest.main()
