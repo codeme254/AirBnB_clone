@@ -23,7 +23,6 @@ class BaseModel:
                         setattr(self, key, date_time_iso)
                     else:
                         setattr(self, key, value)
-            print(self.__dict__)
         else:
             self.id = str(uuid.uuid4())
             self.created_at = self.updated_at = datetime.datetime.now()
