@@ -52,9 +52,7 @@ class BaseModel:
         dictionary["__class__"] = self.__class__.__name__
 
         for key, value in dictionary.items():
-            if key == "created_at":
+            if key in ("created_at", "updated_at"):
                 value = self.__dict__[key].isoformat()
-            elif key == "updated_at":
-                value = self.__dict__[key].isoformat()
-            dictionary[key] = value
+                dictionary[key] = value
         return dictionary
