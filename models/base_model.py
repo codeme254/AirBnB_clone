@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """BaseModel that defines common attributes/methods for other classes"""
 
-import uuid
 import datetime
-
+import uuid
+from models import storage
 
 class BaseModel:
     """Defines all common attributes/methods for other classes"""
@@ -27,13 +27,14 @@ class BaseModel:
             self.id = str(uuid.uuid4())
             self.created_at = self.updated_at = datetime.datetime.now()
             # self.updated_at = datetime.datetime.now()
+            storage.new(self)
 
     def __str__(self):
         """
         str representation of the obj from BaseModel
         [<class name>] (<self.id>) <self.__dict__>
         """
-        class_name = __class__.__name__
+        class_name = type(self).__name__
         return "[{}] ({}) {}".format(class_name, self.id, self.__dict__)
 
     def save(self):
@@ -41,13 +42,14 @@ class BaseModel:
         updates public instance attribute updated_at with the current datetime
         """
         self.updated_at = datetime.datetime.now()
+        storage.save()
 
     def to_dict(self):
         """
         returns dictionary containing all keys/values of __dict__ of instance:
         """
         dictionary = self.__dict__.copy()
-        dictionary["__class__"] = __class__.__name__
+        dictionary["__class__"] = self.__class__.__name__
 
         for key, value in dictionary.items():
             if key == "created_at":
