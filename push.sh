@@ -17,10 +17,10 @@ else
 echo "Adding to repository..."
 git add -A
 echo "Commiting the latest changes"
-git commit -m COMMIT_MESSAGE
+git commit -m $COMMIT_MESSAGE
 echo "Pushing to remote..."
 git push
 echo "++++++++++++++++++++++++++++++++++++"
-echo "Changes published to remote with the message $COMMIT_MESSAGE"
+echo "Changes published to remote with the message '$COMMIT_MESSAGE'"
 echo "++++++++++++++++++++++++++++++++++++"
 fi
