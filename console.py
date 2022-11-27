@@ -9,7 +9,7 @@ from shlex import split
 import models
 from models.base_model import BaseModel
 
-CLASSES = ["BaseModel"]
+CLASSES = ["BaseModel", "User"]
 
 
 def parse(arg):
