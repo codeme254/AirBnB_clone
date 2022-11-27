@@ -1,5 +1,8 @@
 #!/usr/bin/python3
-"""Test suite for the User class in models.user"""
+"""
+Test suite for the User class in models.user
+python3 -m unittest tests/test_models/test_user.py
+"""
 import unittest
 from models.base_model import BaseModel
 
