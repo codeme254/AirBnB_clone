@@ -191,6 +191,9 @@ class TestBaseModel(unittest.TestCase):
             self.assertIn(attr, obj_dict)
 
     def test_instantiation_with_None_kwargs(self):
+        """
+        Tests instantiation with none kwargs
+        """
         with self.assertRaises(TypeError):
             BaseModel(id=None, created_at=None, updated_at=None)
 
