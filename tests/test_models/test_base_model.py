@@ -5,6 +5,7 @@ python3 -m unittest tests/test_models/test_base_model.py
 """
 
 from datetime import datetime
+import os
 import unittest
 
 import models
@@ -179,6 +180,127 @@ class TestBaseModel(unittest.TestCase):
         Even if there are no args, instantiation should still be possible
         """
         self.assertEqual(BaseModel, type(BaseModel()))
+
+    def test_that_to_dict_contains_correct_keys(self):
+        """
+        Checks whether to_dict() returns the expected key
+        """
+        obj_dict = BaseModel().to_dict()
+        attrs = ("id", "created_at", "updated_at", "__class__")
+        for attr in attrs:
+            self.assertIn(attr, obj_dict)
+
+    def test_instantiation_with_None_kwargs(self):
+        with self.assertRaises(TypeError):
+            BaseModel(id=None, created_at=None, updated_at=None)
+
+    def test_to_dict_not_dunder_dict(self):
+        """Checks that to_dict() is a dict object not equal to __dict__"""
+        obj = BaseModel()
+        self.assertNotEqual(obj.to_dict(), obj.__dict__)
+
+    def test_to_dict_output(self):
+        """
+        Samples the dictionary output against expected output
+        """
+        dt = datetime.today()
+        obj = BaseModel()
+        obj.id = "123456"
+        obj.created_at = obj.updated_at = dt
+        test_dict = {
+            'id': '123456',
+            '__class__': 'BaseModel',
+            'created_at': dt.isoformat(),
+            'updated_at': dt.isoformat()
+        }
+        self.assertDictEqual(obj.to_dict(), test_dict)
+
+
+class TestBaseModel_save(unittest.TestCase):
+    """Unittests for testing save method of the BaseModel class."""
+
+    @classmethod
+    def setUp(self):
+        """
+        Ran before this test suite is started
+        """
+        try:
+            os.rename("file.json", "tmp_file")
+        except IOError:
+            pass
+
+    @classmethod
+    def tearDown(self):
+        """
+        Ran after this test suite is finished
+        """
+        try:
+            os.remove("file.json")
+        except IOError:
+            pass
+        try:
+            os.rename("tmp_file", "file.json")
+        except IOError:
+            pass
+
+    def test_one_save(self):
+        """
+        Tests one save to a file
+        """
+        bm = BaseModel()
+        first_updated_at = bm.updated_at
+        bm.save()
+        self.assertLess(first_updated_at, bm.updated_at)
+
+    def test_two_saves(self):
+        """
+        Tests two saves to a file
+        """
+        obj = BaseModel()
+        first_updated_at = obj.updated_at
+        obj.save()
+        second_updated_at = obj.updated_at
+        self.assertLess(first_updated_at, second_updated_at)
+        obj.save()
+        self.assertLess(second_updated_at, obj.updated_at)
+
+    def test_save_with_arg(self):
+        """
+        Simply tests saving with args
+        """
+        obj = BaseModel()
+        with self.assertRaises(TypeError):
+            obj.save(None)
+
+    def test_save_updates_file(self):
+        """
+        Checks if the save method indeed updates a file
+        """
+        obj = BaseModel()
+        obj.save()
+        objid = "BaseModel." + obj.id
+        with open("file.json", "r") as f:
+            self.assertIn(objid, f.read())
+
+    def test_save_updates_file_2(self):
+        """
+        Checks if the save method updates a file
+        """
+        obj = BaseModel()
+        obj.save()
+        objid = "BaseModel." + obj.id
+        with open("file.json", "r") as f:
+            self.assertIn(objid, f.read())
+
+    def test_save_update_file(self):
+        """
+        Tests if file is updated when the 'save' is called
+        """
+        obj = BaseModel()
+        obj.save()
+        objid = "BaseModel.{}".format(obj.id)
+        with open("file.json", encoding="utf-8") as f:
+            self.assertIn(objid, f.read())
 
 
 if __name__ == "__main__":
